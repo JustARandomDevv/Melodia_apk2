@@ -24,7 +24,12 @@ jobs:
 
       - name: Smoke test Kivy (chargement réel des fichiers KV, sans fenêtre)
         run: |
-          pip install "kivy[base]==2.3.1" "kivymd==1.2.0"
+          python -c "import os; os.environ['KIVY_NO_WINDOW'] = '1'; import kivy; from kivy.core.window import Window"
+          # Or run your smoke test script here:
+          python your_smoke_test_script.py
+          env:
+          KIVY_NO_WINDOW: "1"
+          KIVY_USE_DEFAULT_INPUT: "0"
           KIVY_WINDOW=mock KIVY_GL_BACKEND=mock python -c "
           import os
           os.environ['KIVY_NO_ARGS'] = '1'
