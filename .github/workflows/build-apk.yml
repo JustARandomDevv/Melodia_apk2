@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04
+
     steps:
       - name: Checkout du code
         uses: actions/checkout@v4
@@ -22,14 +23,14 @@ jobs:
           python -m py_compile main.py
           find app -name "*.py" -exec python -m py_compile {} \;
 
-
-      - name: Install xvfb
-        run: sudo apt-get update && sudo apt-get install -y xvfb
-
       - name: Smoke test Kivy (chargement réel des fichiers KV, sans fenêtre)
+        env:
+          KIVY_NO_WINDOW: "1"
+          KIVY_USE_DEFAULT_INPUT: "0"
+          KIVY_NO_CONSOLELOG: "1"
         run: |
-          xvfb-run --auto-servernum python main.py
-          KIVY_WINDOW=mock KIVY_GL_BACKEND=mock python -c "
+          pip install "kivy[base]==2.3.1" "kivymd==1.2.0"
+          python -c "
           import os
           os.environ['KIVY_NO_ARGS'] = '1'
           from kivy.lang import Builder
@@ -57,7 +58,7 @@ jobs:
 
       - name: Installer Buildozer et Cython
         run: |
-          pip install --upgrade pip
+          python -m pip install --upgrade pip
           pip install buildozer cython==0.29.36
 
       - name: Cache Buildozer (accélère les builds suivants)
