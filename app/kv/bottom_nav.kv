@@ -1,0 +1,68 @@
+#:import theme app.theme
+
+<NavButton@ButtonBehavior+MDBoxLayout>:
+    icon: "home"
+    label_text: ""
+    active: False
+    orientation: "vertical"
+    padding: [0, dp(4), 0, dp(2)]
+
+    MDIcon:
+        icon: root.icon
+        halign: "center"
+        theme_text_color: "Custom"
+        text_color: theme.ACCENT if root.active else theme.TEXT_SECONDARY
+        pos_hint: {"center_x": 0.5}
+
+    MDLabel:
+        text: root.label_text
+        halign: "center"
+        font_style: "Label"
+        role: "small"
+        theme_text_color: "Custom"
+        text_color: theme.ACCENT if root.active else theme.TEXT_SECONDARY
+        size_hint_y: None
+        height: dp(14)
+
+
+<BottomNavBar>:
+    orientation: "horizontal"
+    padding: [dp(8), dp(6), dp(8), dp(6)]
+    spacing: dp(4)
+
+    canvas.before:
+        Color:
+            rgba: (0.055, 0.075, 0.06, 0.92)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [0, 0, 0, 0]
+        Color:
+            rgba: theme.GLASS_BORDER
+        Line:
+            points: [self.x, self.top, self.right, self.top]
+            width: 1
+
+    NavButton:
+        icon: "home-variant"
+        label_text: "Accueil"
+        active: root.active == "home"
+        on_release: root.go("home")
+
+    NavButton:
+        icon: "magnify"
+        label_text: "Recherche"
+        active: root.active == "search"
+        on_release: root.go("search")
+
+    NavButton:
+        icon: "music-box-multiple"
+        label_text: "Biblio"
+        active: root.active == "library"
+        on_release: root.go("library")
+
+    NavButton:
+        icon: "playlist-music"
+        label_text: "Playlists"
+        active: root.active == "playlists"
+        on_release: root.go("playlists")

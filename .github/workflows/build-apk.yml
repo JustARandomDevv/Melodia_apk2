@@ -1,0 +1,83 @@
+name: Build APK Melodia
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Installer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Vérification rapide de syntaxe (smoke test)
+        run: |
+          python -m py_compile main.py
+          find app -name "*.py" -exec python -m py_compile {} \;
+
+      - name: Smoke test Kivy (chargement réel des fichiers KV, sans fenêtre)
+        run: |
+          pip install "kivy[base]==2.3.1" "kivymd==2.0.1"
+          KIVY_WINDOW=mock KIVY_GL_BACKEND=mock python -c "
+          import os
+          os.environ['KIVY_NO_ARGS'] = '1'
+          from kivy.lang import Builder
+          from app.screens.home_screen import HomeScreen
+          from app.screens.search_screen import SearchScreen
+          from app.screens.library_screen import LibraryScreen
+          from app.screens.playlists_screen import PlaylistsScreen
+          from app.screens.now_playing_screen import NowPlayingScreen
+          from app.widgets.mini_player import MiniPlayer
+          kv_dir = 'app/kv'
+          for fname in sorted(os.listdir(kv_dir)):
+              if fname.endswith('.kv') and fname != 'root.kv':
+                  Builder.load_file(os.path.join(kv_dir, fname))
+          Builder.load_file(os.path.join(kv_dir, 'root.kv'))
+          print('KV OK: tous les fichiers se chargent sans erreur')
+          "
+
+      - name: Installer les dépendances système Buildozer
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            git zip unzip openjdk-17-jdk python3-pip autoconf libtool \
+            pkg-config zlib1g-dev libncurses5-dev cmake libffi-dev \
+            libssl-dev automake build-essential ccache
+
+      - name: Installer Buildozer et Cython
+        run: |
+          pip install --upgrade pip
+          pip install buildozer cython==0.29.36
+
+      - name: Cache Buildozer (accélère les builds suivants)
+        uses: actions/cache@v4
+        with:
+          path: |
+            .buildozer
+            ~/.buildozer
+          key: buildozer-${{ hashFiles('buildozer.spec') }}
+          restore-keys: |
+            buildozer-
+
+      - name: Compiler l'APK (debug)
+        run: |
+          yes | buildozer android debug
+        env:
+          JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
+
+      - name: Localiser l'APK généré
+        run: find . -name "*.apk"
+
+      - name: Uploader l'APK comme artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: melodia-apk
+          path: bin/*.apk
+          retention-days: 30

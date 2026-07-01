@@ -1,0 +1,40 @@
+#:import theme app.theme
+
+<LibraryScreen>:
+    name: "library"
+
+    MDBoxLayout:
+        orientation: "vertical"
+        padding: [dp(18), dp(28), dp(18), dp(8)]
+        spacing: dp(14)
+
+        MDLabel:
+            text: "Ma bibliothèque"
+            font_style: "Headline"
+            role: "small"
+            bold: True
+            theme_text_color: "Custom"
+            text_color: theme.TEXT_PRIMARY
+            size_hint_y: None
+            height: dp(36)
+
+        MDLabel:
+            id: empty_label
+            text: "Aucun morceau téléchargé pour l'instant.\nCherche un titre pour commencer."
+            halign: "center"
+            theme_text_color: "Custom"
+            text_color: theme.TEXT_TERTIARY
+            size_hint_y: None
+            height: dp(50)
+            opacity: 0
+
+        ScrollView:
+            do_scroll_x: False
+
+            MDBoxLayout:
+                id: library_container
+                orientation: "vertical"
+                spacing: dp(8)
+                size_hint_y: None
+                height: self.minimum_height
+                padding: [0, 0, 0, dp(90)]

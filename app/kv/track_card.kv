@@ -1,0 +1,92 @@
+#:import theme app.theme
+
+<TrackCard>:
+    orientation: "horizontal"
+    padding: [dp(10), dp(8), dp(10), dp(8)]
+    spacing: dp(12)
+    size_hint_y: None
+    height: dp(64)
+
+    canvas.before:
+        Color:
+            rgba: theme.GLASS
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [dp(14)]
+
+    ButtonBehavior:
+        size_hint: None, 1
+        width: dp(48)
+        on_release: root.fire_press()
+
+        RelativeLayout:
+            size_hint: 1, 1
+            canvas.before:
+                Color:
+                    rgba: theme.ACCENT_DIM
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [dp(10)]
+
+            Image:
+                source: root.art_source if root.art_source else ""
+                allow_stretch: True
+                keep_ratio: False
+                opacity: 1 if root.art_source else 0
+                size: self.parent.size if self.parent else (0, 0)
+                pos: self.parent.pos if self.parent else (0, 0)
+
+            MDIcon:
+                icon: "music-note"
+                pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                theme_text_color: "Custom"
+                text_color: theme.TEXT_SECONDARY
+                opacity: 0 if root.art_source else 1
+
+    ButtonBehavior:
+        size_hint: 1, 1
+        on_release: root.fire_press()
+
+        MDBoxLayout:
+            orientation: "vertical"
+
+            MDLabel:
+                text: root.title_text
+                font_style: "Body"
+                role: "medium"
+                bold: True
+                theme_text_color: "Custom"
+                text_color: theme.TEXT_PRIMARY
+                shorten: True
+                shorten_from: "right"
+
+            MDLabel:
+                text: root.artist_text
+                font_style: "Label"
+                role: "medium"
+                theme_text_color: "Custom"
+                text_color: theme.TEXT_SECONDARY
+                shorten: True
+                shorten_from: "right"
+
+    MDIconButton:
+        icon: "heart" if root.is_favorite else "heart-outline"
+        theme_text_color: "Custom"
+        text_color: theme.ACCENT if root.is_favorite else theme.TEXT_SECONDARY
+        opacity: 1 if root.show_favorite else 0
+        disabled: not root.show_favorite
+        size_hint_x: None
+        width: dp(40) if root.show_favorite else 0
+        on_release: root.fire_favorite()
+
+    MDIconButton:
+        icon: "plus-circle-outline"
+        theme_text_color: "Custom"
+        text_color: theme.TEXT_SECONDARY
+        opacity: 1 if root.show_add else 0
+        disabled: not root.show_add
+        size_hint_x: None
+        width: dp(40) if root.show_add else 0
+        on_release: root.fire_add()

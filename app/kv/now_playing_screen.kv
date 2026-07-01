@@ -1,0 +1,185 @@
+#:import theme app.theme
+
+<NowPlayingScreen>:
+    name: "now_playing"
+
+    MDBoxLayout:
+        orientation: "vertical"
+        padding: [dp(22), dp(20), dp(22), dp(16)]
+        spacing: dp(18)
+
+        MDBoxLayout:
+            size_hint_y: None
+            height: dp(40)
+
+            MDIconButton:
+                icon: "chevron-down"
+                theme_text_color: "Custom"
+                text_color: theme.TEXT_PRIMARY
+                on_release: root.go_back()
+
+            Widget:
+
+            MDIconButton:
+                id: np_fav_icon_btn
+                icon: "heart-outline"
+                theme_text_color: "Custom"
+                text_color: theme.ACCENT
+                on_release: root.toggle_favorite()
+
+        RelativeLayout:
+            size_hint_y: None
+            height: dp(280)
+            padding: [dp(30), 0, dp(30), 0]
+
+            canvas.before:
+                Color:
+                    rgba: theme.ACCENT_DIM
+                RoundedRectangle:
+                    pos: [self.x + dp(30), self.y]
+                    size: [self.width - dp(60), self.height]
+                    radius: [dp(26)]
+
+            Image:
+                id: np_art
+                allow_stretch: True
+                keep_ratio: False
+                opacity: 0
+                size: [self.parent.width - dp(60), self.parent.height] if self.parent else (0, 0)
+                pos: [self.parent.x + dp(30), self.parent.y] if self.parent else (0, 0)
+
+            MDIcon:
+                icon: "music-note"
+                font_size: "64sp"
+                pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                theme_text_color: "Custom"
+                text_color: theme.TEXT_SECONDARY
+                opacity: 0 if np_art.opacity else 1
+
+        MDBoxLayout:
+            orientation: "vertical"
+            size_hint_y: None
+            height: dp(56)
+            spacing: dp(2)
+
+            MDLabel:
+                id: np_title
+                text: "Aucune lecture"
+                halign: "center"
+                font_style: "Headline"
+                role: "small"
+                bold: True
+                theme_text_color: "Custom"
+                text_color: theme.TEXT_PRIMARY
+                shorten: True
+
+            MDLabel:
+                id: np_artist
+                text: "—"
+                halign: "center"
+                font_style: "Title"
+                role: "medium"
+                theme_text_color: "Custom"
+                text_color: theme.TEXT_SECONDARY
+
+        MDBoxLayout:
+            orientation: "vertical"
+            size_hint_y: None
+            height: dp(46)
+            spacing: dp(2)
+
+            SeekSlider:
+                id: np_slider
+                min: 0
+                max: 100
+                value: 0
+                on_seek_cb: root.on_slider_seek
+                cursor_size: dp(14), dp(14)
+
+            MDBoxLayout:
+                size_hint_y: None
+                height: dp(18)
+
+                MDLabel:
+                    id: np_time_pos
+                    text: "0:00"
+                    font_style: "Label"
+                    role: "small"
+                    theme_text_color: "Custom"
+                    text_color: theme.TEXT_TERTIARY
+
+                MDLabel:
+                    id: np_time_dur
+                    text: "0:00"
+                    halign: "right"
+                    font_style: "Label"
+                    role: "small"
+                    theme_text_color: "Custom"
+                    text_color: theme.TEXT_TERTIARY
+
+        MDBoxLayout:
+            size_hint_y: None
+            height: dp(72)
+            spacing: dp(20)
+            padding: [dp(20), 0, dp(20), 0]
+
+            MDIconButton:
+                icon: "skip-previous"
+                icon_size: "34sp"
+                theme_text_color: "Custom"
+                text_color: theme.TEXT_PRIMARY
+                pos_hint: {"center_y": 0.5}
+                on_release: root.play_prev()
+
+            MDBoxLayout:
+                size_hint: None, None
+                size: dp(64), dp(64)
+                pos_hint: {"center_y": 0.5}
+
+                canvas.before:
+                    Color:
+                        rgba: theme.ACCENT
+                    Ellipse:
+                        pos: self.pos
+                        size: self.size
+
+                MDIconButton:
+                    id: np_play_icon_btn
+                    icon: "play"
+                    icon_size: "30sp"
+                    theme_text_color: "Custom"
+                    text_color: (0.02, 0.05, 0.03, 1)
+                    pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                    on_release: root.toggle_pause()
+
+            MDIconButton:
+                icon: "skip-next"
+                icon_size: "34sp"
+                theme_text_color: "Custom"
+                text_color: theme.TEXT_PRIMARY
+                pos_hint: {"center_y": 0.5}
+                on_release: root.play_next()
+
+        MDLabel:
+            text: "Paroles"
+            font_style: "Title"
+            role: "small"
+            theme_text_color: "Custom"
+            text_color: theme.TEXT_PRIMARY
+            size_hint_y: None
+            height: dp(24)
+
+        ScrollView:
+            do_scroll_x: False
+
+            MDLabel:
+                id: np_lyrics
+                text: ""
+                halign: "left"
+                valign: "top"
+                theme_text_color: "Custom"
+                text_color: theme.TEXT_SECONDARY
+                size_hint_y: None
+                height: self.texture_size[1]
+                text_size: self.width, None
+                padding: [0, dp(4)]

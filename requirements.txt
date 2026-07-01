@@ -1,0 +1,13 @@
+# Pour lancer/tester l'app sur ton PC Windows (hors compilation Android) :
+#   pip install -r requirements.txt
+#   python main.py
+#
+# NB: sous Windows, l'installation de Kivy nécessite parfois :
+#   pip install kivy[base] kivymd
+
+kivy==2.3.1
+kivymd==2.0.1
+pillow
+ytmusicapi
+yt-dlp
+mutagen

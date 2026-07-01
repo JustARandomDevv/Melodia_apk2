@@ -1,0 +1,48 @@
+#:import theme app.theme
+
+<PlaylistsScreen>:
+    name: "playlists"
+
+    MDBoxLayout:
+        orientation: "vertical"
+        padding: [dp(18), dp(28), dp(18), dp(8)]
+        spacing: dp(14)
+
+        MDBoxLayout:
+            size_hint_y: None
+            height: dp(36)
+
+            MDLabel:
+                text: "Playlists"
+                font_style: "Headline"
+                role: "small"
+                bold: True
+                theme_text_color: "Custom"
+                text_color: theme.TEXT_PRIMARY
+
+            MDIconButton:
+                icon: "plus-circle"
+                theme_text_color: "Custom"
+                text_color: theme.ACCENT
+                on_release: root.open_create_dialog()
+
+        MDLabel:
+            id: empty_label
+            text: "Pas encore de playlist.\nAppuie sur + pour en créer une."
+            halign: "center"
+            theme_text_color: "Custom"
+            text_color: theme.TEXT_TERTIARY
+            size_hint_y: None
+            height: dp(50)
+            opacity: 0
+
+        ScrollView:
+            do_scroll_x: False
+
+            MDBoxLayout:
+                id: playlists_container
+                orientation: "vertical"
+                spacing: dp(8)
+                size_hint_y: None
+                height: self.minimum_height
+                padding: [0, 0, 0, dp(90)]

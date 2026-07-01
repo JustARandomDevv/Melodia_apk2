@@ -1,0 +1,61 @@
+#:import theme app.theme
+
+MDBoxLayout:
+    orientation: "vertical"
+    md_bg_color: theme.BG_TOP
+
+    canvas.before:
+        Color:
+            rgba: theme.BG_TOP
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    FloatLayout:
+        id: float_root
+
+        # ── Fond dégradé vertical statique (simule le radial-gradient CSS) ──
+        canvas.before:
+            Color:
+                rgba: theme.BG_BOTTOM
+            Ellipse:
+                pos: (self.width * 0.05, self.height * 0.55)
+                size: (self.width * 1.4, self.height * 0.9)
+            Color:
+                rgba: theme.BG_TOP
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        MDScreenManager:
+            id: sm
+            size_hint: 1, None
+            height: float_root.height
+            pos_hint: {"x": 0, "y": 0}
+
+            HomeScreen:
+                name: "home"
+            SearchScreen:
+                name: "search"
+            LibraryScreen:
+                name: "library"
+            PlaylistsScreen:
+                name: "playlists"
+            NowPlayingScreen:
+                name: "now_playing"
+
+        MiniPlayer:
+            id: mini_player
+            size_hint: 1, None
+            height: dp(64)
+            pos_hint: {"x": 0, "y": 0.088}
+            opacity: 0 if sm.current == "now_playing" else 1
+            disabled: sm.current == "now_playing"
+
+        BottomNavBar:
+            id: bottom_nav
+            size_hint: 1, None
+            height: dp(58)
+            pos_hint: {"x": 0, "y": 0}
+            opacity: 0 if sm.current == "now_playing" else 1
+            disabled: sm.current == "now_playing"
