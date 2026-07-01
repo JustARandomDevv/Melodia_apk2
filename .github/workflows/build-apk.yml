@@ -25,20 +25,21 @@ jobs:
 
       - name: Smoke test Kivy (chargement réel des fichiers KV, sans fenêtre)
         env:
+          KIVY_WINDOW: dummy
+          KIVY_BCKND_WINDOW: dummy
           KIVY_NO_WINDOW: "1"
           KIVY_USE_DEFAULT_INPUT: "0"
           KIVY_NO_CONSOLELOG: "1"
+          KIVY_NO_ARGS: "1"
         run: |
+          # Install core multimedia and virtual display packages to prevent binary compilation crashes
+          sudo apt-get update
+          sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev x11-apps
+          
           pip install "kivy[base]==2.3.1" "kivymd==1.2.0"
+          
           python -c "
           import os
-          # Force Kivy to use a text-based dummy provider before anything else initializes
-          os.environ['KIVY_WINDOW'] = 'dummy'
-          os.environ['KIVY_NO_ARGS'] = '1'
-          
-          import kivy
-          kivy.require('2.3.1')
-          
           from kivy.lang import Builder
           from app.screens.home_screen import HomeScreen
           from app.screens.search_screen import SearchScreen
