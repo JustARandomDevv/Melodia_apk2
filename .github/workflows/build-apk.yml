@@ -32,11 +32,13 @@ jobs:
           KIVY_NO_CONSOLELOG: "1"
           KIVY_NO_ARGS: "1"
         run: |
-          # Install core multimedia and virtual display packages to prevent binary compilation crashes
           sudo apt-get update
           sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev x11-apps
           
-          pip install "kivy[base]==2.3.1" "kivymd==1.2.0"
+          # Upgrading pip & installing dependencies smoothly without building heavy wheels from source
+          python -m pip install --upgrade pip setuptools wheel
+          pip install "kivy[base]==2.3.1"
+          pip install "https://github.com/kivymd/KivyMD/archive/refs/tags/1.2.0.zip"
           
           python -c "
           import os
