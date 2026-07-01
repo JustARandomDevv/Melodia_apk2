@@ -32,7 +32,13 @@ jobs:
           pip install "kivy[base]==2.3.1" "kivymd==1.2.0"
           python -c "
           import os
+          # Force Kivy to use a text-based dummy provider before anything else initializes
+          os.environ['KIVY_WINDOW'] = 'dummy'
           os.environ['KIVY_NO_ARGS'] = '1'
+          
+          import kivy
+          kivy.require('2.3.1')
+          
           from kivy.lang import Builder
           from app.screens.home_screen import HomeScreen
           from app.screens.search_screen import SearchScreen
@@ -40,6 +46,7 @@ jobs:
           from app.screens.playlists_screen import PlaylistsScreen
           from app.screens.now_playing_screen import NowPlayingScreen
           from app.widgets.mini_player import MiniPlayer
+          
           kv_dir = 'app/kv'
           for fname in sorted(os.listdir(kv_dir)):
               if fname.endswith('.kv') and fname != 'root.kv':
