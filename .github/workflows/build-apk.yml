@@ -28,7 +28,7 @@ jobs:
 
       - name: Smoke test Kivy (chargement réel des fichiers KV, sans fenêtre)
         run: |
-          xvfb-run --auto-servernum python your_smoke_test_script.py
+          xvfb-run --auto-servernum python main.py
           KIVY_WINDOW=mock KIVY_GL_BACKEND=mock python -c "
           import os
           os.environ['KIVY_NO_ARGS'] = '1'
