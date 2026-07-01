@@ -22,14 +22,13 @@ jobs:
           python -m py_compile main.py
           find app -name "*.py" -exec python -m py_compile {} \;
 
+
+      - name: Install xvfb
+        run: sudo apt-get update && sudo apt-get install -y xvfb
+
       - name: Smoke test Kivy (chargement réel des fichiers KV, sans fenêtre)
         run: |
-          python -c "import os; os.environ['KIVY_NO_WINDOW'] = '1'; import kivy; from kivy.core.window import Window"
-          # Or run your smoke test script here:
-          python your_smoke_test_script.py
-          env:
-          KIVY_NO_WINDOW: "1"
-          KIVY_USE_DEFAULT_INPUT: "0"
+          xvfb-run --auto-servernum python your_smoke_test_script.py
           KIVY_WINDOW=mock KIVY_GL_BACKEND=mock python -c "
           import os
           os.environ['KIVY_NO_ARGS'] = '1'
