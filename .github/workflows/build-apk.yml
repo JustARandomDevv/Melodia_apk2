@@ -33,9 +33,9 @@ jobs:
                   if fname.endswith('.kv'):
                       with open(os.path.join(kv_dir, fname), 'r', encoding='utf-8') as f:
                           content = f.read()
-                          # Simple structural check to ensure file is not empty or corrupted
-                          if len(content).strip() == 0:
-                              raise ValueError(f'{fname} est vide')
+                          # Vérification propre : est-ce que le fichier contient autre chose que du vide ?
+                          if not content.strip():
+                              raise ValueError(f'{fname} est vide ou corrompu')
               print('Fichiers KV structurellement valides')
           "
 
